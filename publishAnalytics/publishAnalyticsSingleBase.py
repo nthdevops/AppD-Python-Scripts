@@ -71,6 +71,6 @@ while True:
 		rq = enviarRequisicao(urlProdPublish, headersProdJson, publishString)
 		print(rq)
 	else:
-		print("Valor zero não foi publicado")
+		print("Valor zero nao foi publicado")
 	print("Proxima interacao em 60seg")
 	time.sleep(60)

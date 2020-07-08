@@ -8,7 +8,8 @@ class xmlElements(object):
 		self.__file = file
 		self.__fullPathFile = self.__filesFolder+"/"+file
 		self.__root = ET.Element("empty")
-		self.__workingElements.clear()
+		self.__workingElements = {}
+		self.__currentElement = None
 
 	def getFilesFolder(self):
 		return self.__filesFolder
@@ -22,13 +23,24 @@ class xmlElements(object):
 	def getRoot(self):
 		return self.__root
 
+	def getCurrentElement(self):
+		return self.__currentElement
+
 	def setRoot(self, rootName):
 		self.__root = ET.Element(rootName)
 		self.__workingElements.clear()
 
-	def setWorkingElement(self, parent, subElementName):
+	def addWorkingElement(self, element):
+		self.__workingElements.append({element.tag:element})
+
+	def clearWorkingElements():
+		self.__workingElements.clear()
+
+	def setCurrentElement(self, elementTag):
+		self.__currentElement = self.__workingElements[elementTag]
+
+	def setSubElement(self, parent, subElementName):
 		el = ET.SubElement(parent, subElementName)
-		self.__workingElements.append(el)
 		return el
 
 	def setElementText(self, element, text):
@@ -79,16 +91,23 @@ class xmlElements(object):
 	def writeTree(self):
 		fullPathFile = self.__fullPathFile
 		tree = ET.ElementTree(self.__root)
-		tree.write(fullPathFile)
-		x = etree.parse(fullPathFile)
-		f = open(fullPathFile, "wb")
-		f.write(etree.tostring(x, pretty_print=True))
-		f.close()
+		try:
+			tree.write(fullPathFile)
+			x = etree.parse(fullPathFile)
+			f = open(fullPathFile, "wb")
+			f.write(etree.tostring(x, pretty_print=True))
+			f.close()
+			print("Arvore no arquivo "+fullPathFile)
+		except Exception as e:
+			print("Exception "+e+" ao escrever arvore. Verifique se as libs estao instaladas e o arquivo atribuido esta correto.")
 
 	def setTree(self, filePathFromScriptPath):
 		defaultPath = os.getcwd()
 		filePath = defaultPath+filePathFromScriptPath
-		self.__root = ET.parse(filePath).getroot()
-		self.__workingElements.clear()
-		for child in self.__root.iter(None):
-			self.__workingElements.append(child)
+		try:
+			self.__root = ET.parse(filePath).getroot()
+			self.__workingElements.clear()
+			for child in self.__root.iter(None):
+				self.__workingElements.append(child)
+		except Exception as e:
+			print("Exception "+e+" ao ler arvore do arquivo. Verifique se as libs estao instaladas e o arquivo atribuido esta correto.")

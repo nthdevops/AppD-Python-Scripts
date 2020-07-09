@@ -21,6 +21,10 @@ class xmlElements(object):
 	def getFullPathFile(self):
 		return self.__fullPathFile
 
+	def setRoot(self, rootName):
+		self.__root = ET.Element(rootName)
+		self.__workingElements.clear()
+
 	def getRoot(self):
 		return self.__root
 
@@ -44,10 +48,6 @@ class xmlElements(object):
 
 	def getCurrentElement(self):
 		return self.__currentElement
-
-	def setRoot(self, rootName):
-		self.__root = ET.Element(rootName)
-		self.__workingElements.clear()
 
 	def setSubElement(self, parent, subElementName):
 		el = ET.SubElement(parent, subElementName)

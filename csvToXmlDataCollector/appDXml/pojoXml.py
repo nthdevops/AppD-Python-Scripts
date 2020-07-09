@@ -22,12 +22,13 @@ class pojoXml(xmlElements):
 		if el != None:
 			self.addWorkingElement(el)
 
-	def setAppDTsDStdTree(self,fileToTree,appName):
-		self.setTree(fileToTree)
-		el = self.getElementByTag("name")
-		if el != None:
-			el.text = appName
-			self.setDtGathererConfigElement()
+	def setAppDTsDStdTree(self,controllerVersionIn,mdsConfEnabledIn):
+		self.setRoot("application")
+		root = self.getRoot()
+		self.setAttribute(root,"controller-version",controllerVersionIn)
+		self.setAttribute(root,"mds-config-enabled",mdsConfEnabledIn)
+		self.setSubElement(self.getRoot(),"data-gatherer-configs")
+		self.setDtGathererConfigElement()
 
 	def setPojoGatherer(self,attachNewBts,enableAnalytics,enableApm,dtName,classNameIn,methodNameIn):
 		self.setCurrentElement("data-gatherer-configs")

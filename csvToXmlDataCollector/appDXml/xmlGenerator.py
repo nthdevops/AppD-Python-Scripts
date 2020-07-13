@@ -4,12 +4,12 @@ from lxml import etree
 import os
 
 class xmlElements(object):
-	def __init__(self,filesRoot,file):
+	def __init__(self,filesRoot,fileName):
 		self.__filesFolder = filesRoot+"/runtimeFiles"
-		self.__file = file
-		self.__fullPathFile = self.__filesFolder+"/"+file
+		self.__file = fileName+".xml"
+		self.__fullPathFile = self.__filesFolder+"/"+self.getFile()
 		self.__root = ET.Element("empty")
-		self.__workingElements = []
+		self.__workingElements = {}
 		self.__currentElement = None
 
 	def getFilesFolder(self):
@@ -29,17 +29,21 @@ class xmlElements(object):
 		return self.__root
 
 	def addWorkingElement(self, element):
-		self.__workingElements.append({element.tag:element})
+		self.__workingElements.update({element.tag:element})
 
 	def getWorkingElement(self,elementName):
-		element = None
-		for field in self.__workingElements:
-			if elementName in field:
-				element = field[elementName]
+		element = self.__workingElements[elementName]
 		return element
 
 	def clearWorkingElements(self):
 		self.__workingElements.clear()
+
+	def leaveOnlyWorkingElement(self,onlyWorkingElement):
+		onlyWorkingEl = self.setCurrentElement(onlyWorkingElement)
+		self.__workingElements.clear()
+		self.addWorkingElement(onlyWorkingEl)
+		self.setCurrentElement(onlyWorkingEl)
+		return self.getCurrentElement()
 
 	def setCurrentElement(self, elementTag):
 		el = self.getWorkingElement(elementTag)
@@ -114,7 +118,7 @@ class xmlElements(object):
 		tree = ET.ElementTree(self.__root)
 		try:
 			tree.write(fullPathFile)
-			xmlStr = self.removeXmlTrailingSpaces(fullPathFile)
+			xmlStr = self.getCleanTreeStr(fullPathFile)
 			dom = xml.dom.minidom.parseString(xmlStr)
 			pretty = dom.toprettyxml()
 			f = open(fullPathFile, "w")
@@ -133,9 +137,15 @@ class xmlElements(object):
 		except Exception as e:
 			print("Exception "+e+" ao ler arvore do arquivo. Verifique se as libs estao instaladas e o arquivo atribuido esta correto.")
 
-	def removeXmlTrailingSpaces(self,filePath):
+	def getCleanTreeStr(self,filePath):
 		tree = etree.parse(filePath)
 		xmlStr = etree.tostring(tree.getroot())
 		parser = etree.XMLParser(remove_blank_text=True)
 		elem = etree.XML(xmlStr, parser=parser)
 		return etree.tostring(elem)
+
+	def getRootTreeFromStr(self,stringXml):
+		return ET.fromstring(stringXml)
+
+	def getRootFromFile(self,filePath):
+		return self.getRootTreeFromStr(self.getCleanTreeStr(filePath))

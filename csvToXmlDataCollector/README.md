@@ -6,10 +6,18 @@
 
 **Templates:**
 	No diretório onde o arquivo *main.py* está, crie o diretório **_templates_**.
+
 	Dentro de templates, será necessário incluir o arquivo *csv* que será utilizado na criação dos Data Collectors.
+
 	Novamente dentro de templates será necessário incluir os arquivos XML que correspondem ao export das applicações que estão presentes no csv:
-		Exemplo: Dentro do arquivo csv existem as applications app1, app2, app3 que serão feitos Data Collectors. Vá no controller e exporte o xml de cada uma dessas applications. Caso não saiba fazer isso, veja no link: https://docs.appdynamics.com/display/PRO45/Export+and+Import+Business+Application+Settings
+
+		Exemplo: Dentro do arquivo csv existem as applications app1, app2, app3 que serão feitos Data Collectors. Vá no controller e exporte o xml de cada uma dessas applications.
+
+		Caso não saiba fazer isso, veja no link: [exportApplication](https://docs.appdynamics.com/display/PRO45/Export+and+Import+Business+Application+Settings)
+
+
 		Depois de exportar esses xmls, renomeie eles para o nome que está no csv. Logo o xml exportado da application app1, deve ser renomeado para app1.xml, e assim por diante para todas as applications.
+
 	Realizado esses passos para todas as applications o script está pronto para funcionar.
 
 

@@ -2,6 +2,7 @@ import xml.etree.cElementTree as ET
 import xml.dom.minidom
 from lxml import etree
 import os
+from multipledispatch import dispatch
 
 class xmlElements(object):
 	def __init__(self,filesRoot,fileName):
@@ -38,16 +39,22 @@ class xmlElements(object):
 	def clearWorkingElements(self):
 		self.__workingElements.clear()
 
-	def leaveOnlyWorkingElement(self,onlyWorkingElement):
-		onlyWorkingEl = self.setCurrentElement(onlyWorkingElement)
+	def leaveOnlyWorkingElement(self,onlyWorkingElementTag):
+		onlyWorkingEl = self.setCurrentElement(onlyWorkingElementTag)
 		self.__workingElements.clear()
 		self.addWorkingElement(onlyWorkingEl)
 		self.setCurrentElement(onlyWorkingEl)
 		return self.getCurrentElement()
 
+	@dispatch(str)
 	def setCurrentElement(self, elementTag):
 		el = self.getWorkingElement(elementTag)
 		self.__currentElement = el
+		return self.getCurrentElement()
+
+	@dispatch(ET.Element)
+	def setCurrentElement(self, element):
+		self.__currentElement = element
 		return self.getCurrentElement()
 
 	def getCurrentElement(self):
@@ -60,18 +67,29 @@ class xmlElements(object):
 	def setAttribute(self, element, attr, value):
 		element.set(attr, value)
 
-	def getElementsByTag(self, root, elementTag):
-		elements = None
+	@dispatch(ET.Element,str)
+	def getElementsByTag(self,root,elementTag):
+		elements = []
 		for child in root.iter(elementTag):
 			elements.append(child)
 		return elements
 
-	def getElementsByTag(self, elementTag):
-		elements = None
+	@dispatch(str)
+	def getElementsByTag(self,elementTag):
+		elements = []
 		for child in self.__root.iter(elementTag):
 			elements.append(child)
 		return elements
 
+	@dispatch(str)
+	def getElementByTag(self,elementTag):
+		element = None
+		for child in self.__root.iter(elementTag):
+			element = child
+			break
+		return element
+
+	@dispatch(ET.Element,str)
 	def getElementByTag(self,root,elementTag):
 		element = None
 		for child in root.iter(elementTag):
@@ -79,16 +97,19 @@ class xmlElements(object):
 			break
 		return element
 
-	def getElementByTag(self, elementTag):
-		element = None
-		for child in self.__root.iter(elementTag):
-			element = child
-			break
-		return element
-
-	def getElementByTextValue(self, root, elementText):
+	@dispatch(ET.Element,str)
+	def getElementByTextValue(self,root,elementText):
 		element = None
 		for child in root.iter(None):
+			if(elementText == child.text):
+				element = child
+				break
+		return element
+
+	@dispatch(str)
+	def getElementByTextValue(self, elementText):
+		element = None
+		for child in self.__root.iter(None):
 			if(elementText == child.text):
 				element = child
 				break
@@ -99,14 +120,6 @@ class xmlElements(object):
 		for child in root.iter(None):
 			if(elementText == child.text):
 				elements.append(child)
-		return element
-
-	def getElementByTextValue(self, elementText):
-		element = None
-		for child in self.__root.iter(None):
-			if(elementText == child.text):
-				element = child
-				break
 		return element
 
 	def printElementsTags(self, elements):

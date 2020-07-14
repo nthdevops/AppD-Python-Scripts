@@ -110,7 +110,7 @@ class pojoXml(xmlElements):
 		pojoInvocGatheres = pojoEl.getPojoInvocationGatherers()
 		for gatherer in pojoInvocGatheres:
 			self.addMethodInvocationGatherer(gatherer["name"],gatherer["position"],gatherer["gathererType"],gatherer["transformerType"],gatherer["transformerValue"])
-		self.setDataGatheresForBts(pojoEl)
+		#self.setDataGatheresForBts(pojoEl)
 
 	def addAppComponents(self):
 		self.getRoot().append(self.__appComponents["appComp"])

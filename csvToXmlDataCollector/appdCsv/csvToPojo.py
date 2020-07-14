@@ -1,11 +1,12 @@
 from appDCsv.csvReader import csvReader
+from appDXml.pojoElement import pojoElement
 import re
 
 class csvToPojo(csvReader):
-	def __init__(self,filesRoot,csvFileName,delimiterChar):
+	def __init__(self,filesRoot,csvFileName):
+		delimiterChar = ";"
 		super().__init__(filesRoot,csvFileName,delimiterChar)
 
-	#'app1': [['app1', 'bt1', 'com.class1', 'method1', 'getTest().toInt()'], ['app1', 'bt1', 'com.class1', 'method2', 'getTest2().toInt()']]
 	def pojoRowsFormat(self):
 		appRows = self.getRowsDistinctColumn(0)
 		formatedAppRows = {}
@@ -27,7 +28,6 @@ class csvToPojo(csvReader):
 				curDt = curApp[dtName]
 				dtGatherersArray = dtRow[4].split(",")
 				dtGatheres = {}
-				#'app4': [['app4', 'bt4,bt6,bt7', 'com.class1', 'mehtod3', 'getOne().toString(),getTwo(),getThree()']]
 				for c in range(0,len(dtGatherersArray)):
 					dtGatherersArray[c] = dtGatherersArray[c].strip()
 					gathererFirst = dtGatherersArray[c].split(".")[0]
@@ -66,5 +66,29 @@ class csvToPojo(csvReader):
 				curDt.update({'class':dtClass,'method':dtMethod,"bts":dtBts,"gatherers":dtGatheres})
 		return formatedAppRows
 
-	def pojoRowsToPojoElement():
-		pass
+	def appPojoRowsToAppPojoElements(self):
+		appPojoRows = self.pojoRowsFormat()
+		appPojoElements = {}
+		for key in appPojoRows:
+			appPojoElements.update({key:[]})
+			curAppPojo = appPojoElements[key]
+			curApp = appPojoRows[key]
+			for pojoKey in curApp:
+				pojoDict = curApp[pojoKey]
+				pojoEl = pojoElement()
+				dtName = pojoKey
+				className = pojoDict["class"]
+				methodName = pojoDict["method"]
+				bts = pojoDict["bts"]
+				pojoEl.setDefaultPojoGC(dtName,className,methodName,bts)
+				gatherers = pojoDict["gatherers"]
+				for gathererKey in gatherers:
+					curGatherer = gatherers[gathererKey]
+					name = gathererKey
+					position = curGatherer["position"]
+					gathererType = curGatherer["gathererType"]
+					transformerType = curGatherer["transformerType"]
+					transformerValue = curGatherer["transformerValue"]
+					pojoEl.addPojoMethodInvocationGatherer(name,position,gathererType,transformerType,transformerValue)
+				curAppPojo.append(pojoEl)
+		return appPojoElements

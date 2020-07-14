@@ -2,7 +2,7 @@
 
 ## Preparação para execução:
 
-###Antes de iniciar o script é necessário o inserção de alguns arquivos na estrutura do diretório e respeitar os padrões determinados para o CSV como indicado abaixo:
+### Antes de iniciar o script é necessário o inserção de alguns arquivos na estrutura do diretório e respeitar os padrões determinados para o CSV como indicado abaixo:
 
 **Templates:**
 	No diretório onde o arquivo *main.py* está, crie o diretório **_templates_**.
@@ -48,4 +48,4 @@
 ## Execução:
 
 ### Para executar o script, abra um prompt de comando, vá até o diretório que o main.py file está e execute:
-	**python main.py "nomeDoCsv.csv"** (Não é necessário adicionar /templates/nomeDoCsv.csv, apenas o nome do arquivo)
+   **python main.py "nomeDoCsv.csv"** (Não é necessário adicionar /templates/nomeDoCsv.csv, apenas o nome do arquivo)

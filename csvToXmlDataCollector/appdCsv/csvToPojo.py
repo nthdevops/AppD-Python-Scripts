@@ -40,7 +40,7 @@ class csvToPojo(csvReader):
 					#Indica que é para index
 					if gathererFirst.find("param") == 0:
 						gathererType = "index"
-						index = re.findall("\d", gathererFirst)[0]
+						index = re.findall("\d{1,}", gathererFirst)[0]
 						position = index
 						#Indica que não tem getterChain, apenas toString
 						if gathererFirst == gathererLast:
@@ -49,7 +49,8 @@ class csvToPojo(csvReader):
 						else:
 							gathererName = dtMethod+"."+gathererFirst+"."+gathererLast
 							transformerType = "getterChain"
-							transformerValue = dtGatherersArray[c].replace(".", "|")
+							transformerValueLessParam = dtGatherersArray[c].replace(gathererFirst+".", "")
+							transformerValue = transformerValueLessParam.replace(".", "|")
 					else:
 						gathererType = "return"
 						if gathererFirst == "toString":

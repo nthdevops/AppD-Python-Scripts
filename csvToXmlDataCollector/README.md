@@ -23,34 +23,63 @@
 
 **Padrão do CSV:**
 	O CSV precisa ser separado por ";".
+
 	Cada linha do csv deve seguir o seguinte padrão:
+
 		applicationName;bunissesTransactions;class;method;getters
-		applicationName: Nome da application que está no controller e que também será usada de referência para buscar os templates de xml. Como citado no exemplo acima, essa coluna teria valor "app1"
+
+		applicationName: Nome da application que está no controller e que também será usada de referência para buscar os templates de xml. Como citado no exemplo acima, essa coluna teria valor "app1".
+
 		bunissesTransactions: Todas as business transactions que farão uso do Data Collector, separadas por vírgula. Exemplo: /login,/,/auth.
+
 		class: A classe de configuração do Data Collector.
+
 		method: O método de configuração do Data Collector.
+
 		getters: Todos os getters que são relacionados a classe e método de sua linha, separados por vírgula.
+
 		Especificação dos getters:
+
 			Uso dos getters para index:
+
 			O getter pegando o index 0 do método sem nenhuma tratativa adicional, deve ser inserido da seguinte forma:
+
 				app1;/login,/,/auth;com.class1;method1;param[0]
+
 			O getter pegando o index 0 do método com tratativa adicional, deve ser inserido da seguinte forma:
+
 				app1;/login,/,/auth;com.class1;method1;param[0].getDadoExemplo()
+
 			O getter pegando o retorno do método sem nenhuma trativa adicional, deve ser inserido da seguinte forma:
+
 				app1;/login,/,/auth;com.class1;method1;toString
+
 			O getter pegando o retorno do método com trativa adicional, deve ser inserido da seguinte forma:
+
 				app1;/login,/,/auth;com.class1;method1;getDadoExemplo()
+
 			Tendo como exemplo as linhas de csv a seguir:
+
 				app1;/login,/,/auth;com.class1;method1;param[0]
+
 				app1;/login,/,/auth;com.class1;method1;param[1]
+
 				No exemplo as linhas foram inseridas de forma errada. É a mesma application, classe e método, não sendo ideal, a melhor forma de realizar o exemplo acima seria:
+
 				app1;/login,/,/auth;com.class1;method1;param[0],param[1]
+
 			Exemplos de getters:
+
 				Index 2 com getter e retorno sem tratativa:
+
 					app1;/login,/,/auth;com.class1;method1;param[2].getterExemplo(),toString
+
 					No exemplo acima "param[2].getterExemplo()" é o index com getter e a presença do segundo getter "toString" diz ao script que o retorno do método deve ser coletado sem nenhuma tratativa adicional.
+
 				Retorno no método com tratativa e index 1 sem tratativa:
+
 					app1;/login,/,/auth;com.class1;method1;getterExemplo(),param[1]
+
 					No exemplo acima "getterExemplo()" é o retorno com getter e a presença do segundo getter "param[1]" diz ao script que o index 1 do método deve ser coletado sem nenhuma tratativa adicional.
 
 ## Execução:

@@ -18,7 +18,7 @@ class pojoElement(object):
 		self.setPojoConf("businessTransactions",bts)
 
 	def setDefaultPojoGC(self,dtName,classNameIn,methodNameIn,bts):
-		self.setPojoGathererConfig("false","true","false",dtName,classNameIn,methodNameIn,bts)
+		self.setPojoGathererConfig("false","true","true",dtName,classNameIn,methodNameIn,bts)
 
 	def getPojoGathererConfig(self):
 		return self.__pojoGathererConfig

@@ -1,20 +1,24 @@
 from appDXml.xmlGenerator import xmlElements
 from appDXml.pojoElement import pojoElement
 from multipledispatch import dispatch
+import copy
 
 class pojoXml(xmlElements):
-	def __init__(self,filesRoot,fileToBeCreated,appName):
+	def __init__(self,filesRoot,fileToBeCreated,appName,getBts):
 		super().__init__(filesRoot,fileToBeCreated)
 		self.__gathererTypes = {"return":"RETURN_VALUE_GATHERER_TYPE","index":"POSITION_GATHERER_TYPE"}
 		self.__transformerTypes = {"toString":"TO_STRING_OBJECT_DATA_TRANSFORMER_TYPE","getterChain":"GETTER_METHODS_OBJECT_DATA_TRANSFORMER_TYPE"}
 		self.__matchTypes = {"class":"MATCHES_CLASS"}
-		applicationXmlFilePath = filesRoot+"/templates/"+appName+".xml"
-		attribs = self.getAppInfoFromFile(applicationXmlFilePath)
-		self.__appComponents = self.getBusinessTransactionsFromFile(applicationXmlFilePath)
-		self.setAppDTsMinifiedDStdTree(attribs["controllerVersion"],attribs["mdsConfEnabled"])
+		self.__getBts = getBts
+		self.__applicationXmlFilePath = filesRoot+"/templates/"+appName+".xml"
+		if getBts:
+			self.__appComponentsXmlTemplate = self.getBusinessTransactionsFromFile(self.__applicationXmlFilePath)
 
 	def getGathererType(self,gathererType):
 		return self.__gathererTypes[gathererType]
+
+	def getBts(self):
+		return self.__getBts
 
 	def getTransformerType(self,transformerType):
 		return self.__transformerTypes[transformerType]
@@ -29,12 +33,17 @@ class pojoXml(xmlElements):
 			self.addWorkingElement(el)
 		return self.setCurrentElement(el)
 
-	def setAppDTsMinifiedDStdTree(self,controllerVersionIn,mdsConfEnabledIn):
+	def setAppCompElement(self):
+		self.clearWorkingElements()
+		appC = self.getElementByTag("application-components")
+		if appC != None:
+			self.addWorkingElement(appC)
+		return self.setCurrentElement(appC)
+
+	def setAppDTsMinifiedDStdTree(self):
 		self.setRoot("application")
 		root = self.getRoot()
-		self.setAttribute(root,"controller-version",controllerVersionIn)
-		self.setAttribute(root,"mds-config-enabled",mdsConfEnabledIn)
-		dtGtConf = self.setSubElement(self.getRoot(),"data-gatherer-configs")
+		dtGtConf = self.setSubElement(root,"data-gatherer-configs")
 		self.setDtGathererConfigElement()
 
 	@dispatch(str,str,str,str,str,str)
@@ -42,6 +51,7 @@ class pojoXml(xmlElements):
 		dtGC = self.setDtGathererConfigElement()
 		pojoDt = self.setSubElement(dtGC,"pojo-data-gatherer-config")
 		self.addWorkingElement(pojoDt)
+		self.setCurrentElement("pojo-data-gatherer-config")
 		self.setAttribute(pojoDt,"attach-to-new-bts",attachNewBts)
 		self.setAttribute(pojoDt,"enabled-for-analytics",enableAnalytics)
 		self.setAttribute(pojoDt,"enabled-for-apm",enableApm)
@@ -56,17 +66,20 @@ class pojoXml(xmlElements):
 		matchName = self.setSubElement(pojoMethodDef,"match-type")
 		matchName.text = self.getMatchType("class")
 		self.setSubElement(pojoMethodDef,"method-parameter-types")
-		nameEnd = self.setSubElement(pojoDt,"name")
-		nameEnd.text = dtName
+
+	def endPojo(self):
+		pojoDt = self.getCurrentElement()
+		dtName = self.getElementByTag(pojoDt,"name").text
+		name = self.setSubElement(pojoDt,"name")
+		name.text = dtName
 
 	def addMethodInvocationGatherer(self,nameIn,positionIn,gathererTypeIn,transformerTypeIn,transformerValueIn):
-		self.setCurrentElement("pojo-data-gatherer-config")
 		pojoDt = self.getCurrentElement()
 		methodInvocGatherer = self.setSubElement(pojoDt,"method-invocation-data-gatherer-config")
 		name = self.setSubElement(methodInvocGatherer,"name")
 		name.text = nameIn
 		position = self.setSubElement(methodInvocGatherer,"position")
-		position.text = positionIn
+		position.text = str(positionIn)
 		gathererType = self.setSubElement(methodInvocGatherer,"gatherer-type")
 		gathererType.text = self.getGathererType(gathererTypeIn)
 		transformerType = self.setSubElement(methodInvocGatherer,"transformer-type")
@@ -77,44 +90,113 @@ class pojoXml(xmlElements):
 
 	def getBusinessTransactionsFromFile(self,filePath):
 		root = self.getRootFromFile(filePath)
-		appComp = self.getElementByTag(root,"application-components")
-		appComps = self.getElementsByTag(appComp,"application-component")
-		bts = {}
+		rootAppComps = self.getElementByTag(root,"application-components")
+		appComps = self.getElementsByTag(rootAppComps,"application-component")
+		returnComps = {}
 
 		for appC in appComps:
+			appCName = self.getElementByTag(appC,"name")
+			if appCName == None:
+				continue
 			bssTrcs = self.getElementByTag(appC,"business-transactions")
 			if bssTrcs != None:
 				bssTrc = self.getElementsByTag(bssTrcs,"business-transaction")
-			for bt in bssTrc:
-				name = self.getElementByTag(bt,"name")
-				if name != None:
-					bts.update({name.text:bt})
-		return {"appComp":appComp, "bts":bts}
+				for bt in bssTrc:
+					name = self.getElementByTag(bt,"name")
+					if name != None:
+						if not appCName.text in returnComps:
+							returnComps.update({appCName.text:{"appCompElement":appC,"bts":{}}})
+						bts = returnComps[appCName.text]["bts"]
+						bts.update({name.text:bt})
+		return returnComps
 
-	def getAppInfoFromFile(self,filePath):
+	def getCleanAppComp(self,appC):
+		if appC == None:
+			print("Empty application-component.")
+			return None
+		appCCopy = self.getCopyLess(appC,"business-transactions")
+		self.setSubElement(appCCopy,"business-transactions")
+		return appCCopy
+
+	def addDtToBT(self,appComponent,btElement,dtName):
+		rootAppComps = self.getCurrentElement()
+		appCompName = self.getElementByTag(appComponent,"name").text
+		btName = self.getElementByTag(btElement,"name").text
+		appComp = self.getAppComponent(appCompName)
+		if appComp == None:
+			appComp = self.getCleanAppComp(appComponent)
+			self.setSubElement(rootAppComps,appComp)
+		bt = self.getBTFromTree(btName)
+		if bt == None:
+			bt = copy.deepcopy(btElement)
+			bts = self.getElementByTag(appComp,"business-transactions")
+			self.setSubElement(bts,bt)
+		dtConfig = self.setSubElement(bt,"data-gatherer-config")
+		dtConfig.text = dtName
+
+	def setAppBTsMinifiedDStdTree(self):
+		self.setRoot("application")
+		root = self.getRoot()
+		attribs = self.getAppInfos(self.__applicationXmlFilePath)
+		self.setAttribute(root,"controller-version",attribs["controllerVersion"])
+		self.setAttribute(root,"mds-config-enabled",attribs["mdsEnable"])
+		self.setSubElement(root,"data-gatherer-configs")
+		self.setSubElement(root,"application-components")
+		self.setAppCompElement()
+
+	def getAppInfos(self,filePath):
 		root = self.getRootFromFile(filePath)
-		return {"controllerVersion":root.attrib["controller-version"],"mdsConfEnabled":root.attrib["mds-config-enabled"]}
-
-	def setDataGatheresForBts(self,pojoEl):
-		pojoBts = pojoEl.getPojoBts()
-		pojoConfig = pojoEl.getPojoGathererConfig()
-		for bt in pojoBts:
-			btElement = self.__appComponents["bts"][bt]
-			dtConfig = self.setSubElement(btElement,"data-gatherer-config")
-			dtConfig.text = pojoConfig["dtName"]
+		controllerVersion = self.getAttribute(root,"controller-version")
+		mdsEnable = self.getAttribute(root,"mds-config-enabled")
+		return {"controllerVersion":controllerVersion,"mdsEnable":mdsEnable}
 
 	@dispatch(pojoElement)
 	def setPojoGatherer(self,pojoEl):
+		if self.getRoot().tag == "empty":
+			self.setAppDTsMinifiedDStdTree()
 		pojoGathererConfig = pojoEl.getPojoGathererConfig()
 		self.setPojoGatherer(pojoGathererConfig["attachNewBts"],pojoGathererConfig["enableAnalytics"],pojoGathererConfig["enableApm"],pojoGathererConfig["dtName"],pojoGathererConfig["className"],pojoGathererConfig["methodName"])
 		pojoInvocGatheres = pojoEl.getPojoInvocationGatherers()
 		for gatherer in pojoInvocGatheres:
 			self.addMethodInvocationGatherer(gatherer["name"],gatherer["position"],gatherer["gathererType"],gatherer["transformerType"],gatherer["transformerValue"])
-		#self.setDataGatheresForBts(pojoEl)
+		self.endPojo()
 
-	def addAppComponents(self):
-		self.getRoot().append(self.__appComponents["appComp"])
+	def getAppComponent(self,appCompName):
+		rootAppComps = self.getCurrentElement()
+		appComps = self.getElementsByTag(rootAppComps,"application-component")
+		appComp = None
+		if not len(appComps) == 0:
+			for appC in appComps:
+				appCName = self.getElementByTag(appC,"name")
+				if appCName == None:
+					continue
+				if appCName.text == appCompName:
+					appComp = appC
+					break
+		return appComp
 
-	def writeTree(self):
-		#self.addAppComponents()
-		super().writeTree()
+	def getBTFromTree(self,btName):
+		rootAppComps = self.getCurrentElement()
+		appComps = self.getElementsByTag(rootAppComps,"application-component")
+		btRet = None
+		for appC in appComps:
+			bssTrcs = self.getElementByTag(appC,"business-transactions")
+			if bssTrcs != None:
+				bssTrc = self.getElementsByTag(bssTrcs,"business-transaction")
+				for bt in bssTrc:
+					name = self.getElementByTag(bt,"name")
+					if name.text == btName:
+						btRet = bt
+						break
+		return btRet
+
+	def setDataGatheresForBts(self,pojoEl):
+		if self.getRoot().tag == "empty":
+			self.setAppBTsMinifiedDStdTree()
+		pojoBts = pojoEl.getPojoBts()
+		pojoConfig = pojoEl.getPojoGathererConfig()
+		for bt in pojoBts:
+			for appCKey in self.__appComponentsXmlTemplate:
+				appC = self.__appComponentsXmlTemplate[appCKey]
+				if bt in appC["bts"]:
+					self.addDtToBT(appC["appCompElement"],appC["bts"][bt],pojoConfig["dtName"])

@@ -1,3 +1,4 @@
 /csvToXmlDataCollector/runtimeFiles
 /**/__pycache__/
 /csvToXmlDataCollector/templates/
+/csvToXmlDataCollector/tests.py

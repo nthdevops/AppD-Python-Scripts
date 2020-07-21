@@ -1,7 +1,8 @@
 import xml.etree.cElementTree as ET
 import xml.dom.minidom
-from lxml import etree
 import os
+import copy
+from lxml import etree
 from multipledispatch import dispatch
 
 class xmlElements(object):
@@ -29,12 +30,24 @@ class xmlElements(object):
 	def getRoot(self):
 		return self.__root
 
+	def getXmlSize(self):
+		c = 1
+		for i in self.getRoot().iter('*'):
+			if len(list(i)) > 0:
+				c += 2
+			else:
+				c += 1
+		return c
+
 	def addWorkingElement(self, element):
 		self.__workingElements.update({element.tag:element})
 
 	def getWorkingElement(self,elementName):
 		element = self.__workingElements[elementName]
 		return element
+
+	def getWorkingElements(self):
+		return self.__workingElements
 
 	def clearWorkingElements(self):
 		self.__workingElements.clear()
@@ -60,12 +73,20 @@ class xmlElements(object):
 	def getCurrentElement(self):
 		return self.__currentElement
 
+	@dispatch(ET.Element,str)
 	def setSubElement(self, parent, subElementName):
 		el = ET.SubElement(parent, subElementName)
 		return el
 
+	@dispatch(ET.Element,ET.Element)
+	def setSubElement(self, parent, subElement):
+		parent.append(subElement)
+
 	def setAttribute(self, element, attr, value):
 		element.set(attr, value)
+
+	def getAttribute(self,element,attr):
+		return element.attrib[attr]
 
 	@dispatch(ET.Element,str)
 	def getElementsByTag(self,root,elementTag):
@@ -137,7 +158,7 @@ class xmlElements(object):
 			f = open(fullPathFile, "w")
 			f.write(pretty)
 			f.close()
-			print("Arvore no arquivo "+fullPathFile)
+			print("PATH XML: "+fullPathFile)
 		except Exception as e:
 			print("Exception "+str(e)+" ao escrever arvore. Verifique se as libs estao instaladas e o arquivo atribuido esta correto.")
 
@@ -151,14 +172,37 @@ class xmlElements(object):
 			print("Exception "+e+" ao ler arvore do arquivo. Verifique se as libs estao instaladas e o arquivo atribuido esta correto.")
 
 	def getCleanTreeStr(self,filePath):
-		tree = etree.parse(filePath)
-		xmlStr = etree.tostring(tree.getroot())
-		parser = etree.XMLParser(remove_blank_text=True)
-		elem = etree.XML(xmlStr, parser=parser)
-		return etree.tostring(elem)
+		try:
+			tree = etree.parse(filePath)
+			xmlStr = etree.tostring(tree.getroot())
+			parser = etree.XMLParser(remove_blank_text=True)
+			elem = etree.XML(xmlStr, parser=parser)
+			strReturn = etree.tostring(elem)
+			return strReturn
+		except Exception as e:
+			print("Arvore nao carregada do arquivo "+filePath+". Exception "+str(e))
+		else:
+			pass
+		finally:
+			pass
 
 	def getRootTreeFromStr(self,stringXml):
-		return ET.fromstring(stringXml)
+		try:
+			root = ET.fromstring(stringXml)
+			return root
+		except Exception as e:
+			print("Exception"+str(e)+", ao carregar arquivo da string "+stringXml)
+		else:
+			pass
+		finally:
+			pass
 
 	def getRootFromFile(self,filePath):
 		return self.getRootTreeFromStr(self.getCleanTreeStr(filePath))
+
+	def getCopyLess(self,element,*elementsTagRemove):
+		el = copy.deepcopy(element)
+		for elRemove in elementsTagRemove:
+			remove = self.getElementByTag(el,elRemove)
+			el.remove(remove)
+		return el

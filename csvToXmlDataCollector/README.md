@@ -1,4 +1,4 @@
-# Guia de utilização do script
+# Guia de utilização do script (DESATUALIZADO)
 
 ## Preparação para execução:
 

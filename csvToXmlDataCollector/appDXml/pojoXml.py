@@ -11,6 +11,7 @@ class pojoXml(xmlElements):
 		self.__matchTypes = {"class":"MATCHES_CLASS"}
 		self.__getBts = getBts
 		self.__applicationXmlFilePath = filesRoot+"/templates/"+appName+".xml"
+		self.__btsNotFound = []
 		if getBts:
 			self.__appComponentsXmlTemplate = self.getBusinessTransactionsFromFile(self.__applicationXmlFilePath)
 
@@ -25,6 +26,12 @@ class pojoXml(xmlElements):
 
 	def getMatchType(self,matchType):
 		return self.__matchTypes[matchType]
+
+	def getBtsNotFound(self):
+		return self.__btsNotFound
+
+	def setBtNotFound(self,bt):
+		self.__btsNotFound.append(bt)
 
 	def setDtGathererConfigElement(self):
 		self.clearWorkingElements()
@@ -196,7 +203,12 @@ class pojoXml(xmlElements):
 		pojoBts = pojoEl.getPojoBts()
 		pojoConfig = pojoEl.getPojoGathererConfig()
 		for bt in pojoBts:
+			btReturn = None
 			for appCKey in self.__appComponentsXmlTemplate:
 				appC = self.__appComponentsXmlTemplate[appCKey]
 				if bt in appC["bts"]:
+					btReturn = bt
 					self.addDtToBT(appC["appCompElement"],appC["bts"][bt],pojoConfig["dtName"])
+			if btReturn == None:
+				if not bt in self.getBtsNotFound():
+					self.setBtNotFound(bt)

@@ -45,9 +45,11 @@ for appKey in appPojoElements:
 		for pojoEl in pojos:
 			if p.getXmlSize() > maxLines:
 					btsNum +=1
+					print("NAO ENCONTRADAS: "+str(p.getBtsNotFound())+"\n")
 					p.writeTree()
 					print()
 					p = pojoXml(os.getcwd(),appKey+"_BusinessTransactions"+str(btsNum),appKey,getBts)
 			p.setDataGatheresForBts(pojoEl)
+		print("NAO ENCONTRADAS: "+str(p.getBtsNotFound())+"\n")
 		p.writeTree()
 		print()

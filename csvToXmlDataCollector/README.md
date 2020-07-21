@@ -13,8 +13,7 @@
 
 		Exemplo: Dentro do arquivo csv existem as applications app1, app2, app3 que serão feitos Data Collectors. Vá no controller e exporte o xml de cada uma dessas applications.
 
-		Caso não saiba fazer isso, veja no link: [exportApplication](https://docs.appdynamics.com/display/PRO45/Export+and+Import+Business+Application+Settings)
-
+		Caso não saiba fazer isso, veja no link: https://docs.appdynamics.com/display/PRO45/Export+and+Import+Business+Application+Settings
 
 		Depois de exportar esses xmls, renomeie eles para o nome que está no csv. Logo o xml exportado da application app1, deve ser renomeado para app1.xml, e assim por diante para todas as applications.
 
@@ -24,10 +23,11 @@
 **Padrão do CSV:**
 	O CSV precisa ser separado por ";".
 
-	O script, prevê alguns cenários de csv para execução do script:
+	O script prevê alguns cenários de csv para execução:
 
 		O ideal, é que steja no padrão abaixo:
-		applicationName;bunissesTransactions;class;method;getters
+
+			applicationName;bunissesTransactions;class;method;getters
 
 		applicationName: Nome da application que está no controller e que também será usada de referência para buscar os templates de xml. Como citado no exemplo acima, essa coluna teria valor "app1".
 
@@ -56,6 +56,7 @@
 				app1;/login,/,/auth;com.class1;method1;toString
 				OU
 				app1;/login,/,/auth;com.class1;method1;
+
 			A opção de deixar a célula vazia também é válida, porém será necessário ativar a validação do csv e caso haja alguma coleta adicional além do toString, será melhor utilizar toString, que ficará: getExemplo(),toString ao invés de um valor vazio.
 
 			O getter pegando o retorno do método com trativa adicional, deve ser inserido da seguinte forma:
@@ -69,6 +70,7 @@
 				app1;/login,/,/auth;com.class1;method1;param[1]
 
 				No exemplo será necessário ativar a validação do csv, que irá processar as linhas e transformar para:
+
 					app1;/login,/,/auth;com.class1;method1;param[0],param[1]
 
 			Exemplos de getters:
@@ -92,7 +94,8 @@
 ### Para executar o script, abra um prompt de comando, vá até o diretório que o main.py file está e execute:
    **python main.py "nomeDoCsv.csv" VALIDARCSV(true/false) CRIARDATACOLLECTORSIMPORT(true/false) CRIARBUSINESSTRANSACTIONSIMPORT(true/false)** (Não é necessário adicionar /templates/nomeDoCsv.csv, apenas o nome do arquivo)
 
-**Exemplo:**
-   
-   python main.py "nomeDoCsv.csv" true true true = O primeiro paramêtro "true" é para validar o CSV, o segundo para criar os xmls dos data collectors e o terceiro para criar os xmls das business transactions
-   python main.py "nomeDoCsv.csv" false true true = O primeiro  paramêtro "false" diz que não irá validar o CSV, o segundo paramêtro "true" diz que irá criar os xmls dos data collectors e o terceiro para criar os xmls das business transactions
+**Exemplos:**
+
+	python main.py "nomeDoCsv.csv" true true true = O primeiro paramêtro "true" é para validar o CSV, o segundo para criar os xmls dos data collectors e o terceiro para criar os xmls das business transactions
+
+	python main.py "nomeDoCsv.csv" false true true = O primeiro  paramêtro "false" diz que não irá validar o CSV, o segundo paramêtro "true" diz que irá criar os xmls dos data collectors e o terceiro para criar os xmls das business transactions

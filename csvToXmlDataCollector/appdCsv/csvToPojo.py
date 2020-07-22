@@ -94,6 +94,9 @@ class csvToPojo(csvReader):
 		else:
 			return indexArr[0]
 
+	def getCleanName(self,name):
+		return ''.join(re.findall("[a-zA-Z0-9]{1,}",name))
+
 	def pojoRowsFormat(self,checkCsv):
 		appRows = None
 		if checkCsv:
@@ -114,7 +117,7 @@ class csvToPojo(csvReader):
 					dtBts[c] = dtBts[c].strip()
 				dtClass = dtRow[2]
 				dtMethod = dtRow[3]
-				dtName = "LGPD"+"_"+dtClass.split(".")[-1]+"."+dtMethod
+				dtName = self.getCleanName("LGPD"+""+dtClass.split(".")[-1]+"."+dtMethod)
 				curApp.update({dtName:{}})
 				curDt = curApp[dtName]
 				dtGatherersArray = dtRow[4].split(",")
@@ -125,7 +128,7 @@ class csvToPojo(csvReader):
 					gathererFirst = gatherersSplit[0]
 					gathererLast = gatherersSplit[-1]
 					gathererBeforeLast = gatherersSplit[-2] if len(gatherersSplit) > 1 else ""
-					gathererName = "LGPD_"+key[0:4]+"_"
+					gathererName = "LGPD"+key[0:4]
 					position = 0
 					gathererType = None
 					transformerType = None
@@ -156,6 +159,7 @@ class csvToPojo(csvReader):
 								gathererName += dtMethod+self.gathAutoNaming(gathererLast)
 							transformerType = "getterChain"
 							transformerValue = dtGatherersArray[c].replace(".", "|")
+					gathererName = self.getCleanName(gathererName)
 					dtGatheres.update({gathererName:{"position":position,"gathererType":gathererType,"transformerType":transformerType,"transformerValue":transformerValue}})
 				curDt.update({'class':dtClass,'method':dtMethod,"bts":dtBts,"gatherers":dtGatheres})
 		return formatedAppRows

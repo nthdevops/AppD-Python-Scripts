@@ -18,12 +18,13 @@ if not os.path.isdir("./templates"):
 
 rootPath = os.getcwd()
 csvFile = sys.argv[1]
-checkCsv = strBool(sys.argv[2])
-getDTS = strBool(sys.argv[3])
-getBts = strBool(sys.argv[4])
+prefix = sys.argv[2]
+checkCsv = strBool(sys.argv[3])
+getDTS = strBool(sys.argv[4])
+getBts = strBool(sys.argv[5])
 csvPojo = csvToPojo(rootPath,csvFile)
 print("\nColetando dados do CSV\n")
-appPojoElements = csvPojo.appPojoRowsToAppPojoElements(checkCsv)
+appPojoElements = csvPojo.appPojoRowsToAppPojoElements(checkCsv,prefix)
 for appKey in appPojoElements:
 	pojos = appPojoElements[appKey]
 	dtsNum = 1

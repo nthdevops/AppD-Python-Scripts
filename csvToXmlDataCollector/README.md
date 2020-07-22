@@ -92,10 +92,10 @@
 ## Execução:
 
 ### Para executar o script, abra um prompt de comando, vá até o diretório que o main.py file está e execute:
-   **python main.py "nomeDoCsv.csv" VALIDARCSV(true/false) CRIARDATACOLLECTORSIMPORT(true/false) CRIARBUSINESSTRANSACTIONSIMPORT(true/false)** (Não é necessário adicionar /templates/nomeDoCsv.csv, apenas o nome do arquivo)
+   **python main.py "nomeDoCsv.csv" "PREFIXO_NOME_DTS" VALIDARCSV(true/false) CRIARDATACOLLECTORSIMPORT(true/false) CRIARBUSINESSTRANSACTIONSIMPORT(true/false)** (Não é necessário adicionar /templates/nomeDoCsv.csv, apenas o nome do arquivo)
 
 **Exemplos:**
 
-	python main.py "nomeDoCsv.csv" true true true = O primeiro paramêtro "true" é para validar o CSV, o segundo para criar os xmls dos data collectors e o terceiro para criar os xmls das business transactions
+	python main.py "nomeDoCsv.csv" PROJ1 true true true = O paramêtro PROJ1 define o prefixo para nomeação dos Data Collectors, o primeiro paramêtro "true" é para validar o CSV, o segundo para criar os xmls dos data collectors e o terceiro para criar os xmls das business transactions
 
-	python main.py "nomeDoCsv.csv" false true true = O primeiro  paramêtro "false" diz que não irá validar o CSV, o segundo paramêtro "true" diz que irá criar os xmls dos data collectors e o terceiro para criar os xmls das business transactions
+	python main.py "nomeDoCsv.csv" PROJ2 false true true = O paramêtro PROJ2 define o prefixo para nomeação dos Data Collectors, o primeiro  paramêtro "false" diz que não irá validar o CSV, o segundo paramêtro "true" diz que irá criar os xmls dos data collectors e o terceiro para criar os xmls das business transactions

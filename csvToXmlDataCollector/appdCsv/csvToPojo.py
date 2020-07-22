@@ -97,7 +97,7 @@ class csvToPojo(csvReader):
 	def getCleanName(self,name):
 		return ''.join(re.findall("[a-zA-Z0-9]{1,}",name))
 
-	def pojoRowsFormat(self,checkCsv):
+	def pojoRowsFormat(self,checkCsv,prefix):
 		appRows = None
 		if checkCsv:
 			appRows = self.getAppRowsFullCheck()
@@ -117,7 +117,7 @@ class csvToPojo(csvReader):
 					dtBts[c] = dtBts[c].strip()
 				dtClass = dtRow[2]
 				dtMethod = dtRow[3]
-				dtName = self.getCleanName("LGPD"+""+dtClass.split(".")[-1]+"."+dtMethod)
+				dtName = self.getCleanName(prefix+""+dtClass.split(".")[-1]+"."+dtMethod)
 				curApp.update({dtName:{}})
 				curDt = curApp[dtName]
 				dtGatherersArray = dtRow[4].split(",")
@@ -128,7 +128,7 @@ class csvToPojo(csvReader):
 					gathererFirst = gatherersSplit[0]
 					gathererLast = gatherersSplit[-1]
 					gathererBeforeLast = gatherersSplit[-2] if len(gatherersSplit) > 1 else ""
-					gathererName = "LGPD"+key[0:4]
+					gathererName = prefix+key[0:4]
 					position = 0
 					gathererType = None
 					transformerType = None
@@ -164,8 +164,8 @@ class csvToPojo(csvReader):
 				curDt.update({'class':dtClass,'method':dtMethod,"bts":dtBts,"gatherers":dtGatheres})
 		return formatedAppRows
 
-	def appPojoRowsToAppPojoElements(self,checkCsv):
-		appPojoRows = self.pojoRowsFormat(checkCsv)
+	def appPojoRowsToAppPojoElements(self,checkCsv,prefix):
+		appPojoRows = self.pojoRowsFormat(checkCsv,prefix)
 		appPojoElements = {}
 		for key in appPojoRows:
 			appPojoElements.update({key:[]})

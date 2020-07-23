@@ -1,5 +1,5 @@
-from csvToXmlDataCollector.appDXml.xmlGenerator import xmlElements
-from csvToXmlDataCollector.appDXml.pojoElement import pojoElement
+from appDXml.xmlGenerator import xmlElements
+from appDXml.pojoElement import pojoElement
 from multipledispatch import dispatch
 import copy
 import sys

@@ -37,6 +37,7 @@ class csvToPojo(csvReader):
 		#Para cada App
 		for appKey in appRows:
 			curApp = appRows[appKey]
+			newCurApp = []
 			dontIterate = []
 			#Para cada pojo dentro da app
 			for count in range(0,len(curApp)):
@@ -66,13 +67,8 @@ class csvToPojo(csvReader):
 								gt = gt.replace(".","",1)
 							if curArray[4].find(gt) == -1:
 								curArray[4] += ","+gt
-				curApp[count] = curArray
-			#Ao fazer delete o index irá alterar, logo será necessário somar elementos removidos e subtrair no pop
-			totalRemoved = 0
-			for i in dontIterate:
-				curApp.pop(i - totalRemoved)
-				totalRemoved += 1
-			appRows[appKey] = curApp
+				newCurApp.append(curArray)
+			appRows[appKey] = newCurApp
 		return appRows
 
 	def gathName(self,nameIn):

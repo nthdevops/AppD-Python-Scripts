@@ -50,6 +50,7 @@ for appKey in appPojoElements:
 					print()
 					p = pojoXml(os.getcwd(),appKey+"_BusinessTransactions"+str(btsNum),appKey,getBts)
 			p.setDataGatheresForBts(pojoEl)
-		print("NAO ENCONTRADAS: "+str(p.getBtsNotFound())+"\n")
+		if len(p.getBtsNotFound()) > 0:
+			print("NAO ENCONTRADAS: "+str(p.getBtsNotFound())+"\n")
 		p.writeTree()
 		print()

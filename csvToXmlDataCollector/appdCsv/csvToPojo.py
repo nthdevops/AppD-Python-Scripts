@@ -1,5 +1,6 @@
-from appDCsv.csvReader import csvReader
-from appDXml.pojoElement import pojoElement
+#Add dir path before csvToXmlDataCollector to python path in runtime to execute the imports properly
+from csvToXmlDataCollector.appDCsv.csvReader import csvReader
+from csvToXmlDataCollector.appDXml.pojoElement import pojoElement
 import re
 
 class csvToPojo(csvReader):

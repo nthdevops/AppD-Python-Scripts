@@ -1,7 +1,8 @@
-from appDXml.xmlGenerator import xmlElements
-from appDXml.pojoElement import pojoElement
+from csvToXmlDataCollector.appDXml.xmlGenerator import xmlElements
+from csvToXmlDataCollector.appDXml.pojoElement import pojoElement
 from multipledispatch import dispatch
 import copy
+import sys
 
 class pojoXml(xmlElements):
 	def __init__(self,filesRoot,fileToBeCreated,appName,getBts):
@@ -192,7 +193,7 @@ class pojoXml(xmlElements):
 				bssTrc = self.getElementsByTag(bssTrcs,"business-transaction")
 				for bt in bssTrc:
 					name = self.getElementByTag(bt,"name")
-					if name.text == btName:
+					if name.text.lower() == btName.lower():
 						btRet = bt
 						break
 		return btRet
@@ -206,9 +207,11 @@ class pojoXml(xmlElements):
 			btReturn = None
 			for appCKey in self.__appComponentsXmlTemplate:
 				appC = self.__appComponentsXmlTemplate[appCKey]
-				if bt in appC["bts"]:
+				bts = [x.lower() for x in appC["bts"]]
+				if bt.lower() in bts:
 					btReturn = bt
-					self.addDtToBT(appC["appCompElement"],appC["bts"][bt],pojoConfig["dtName"])
+					index = bts.index(bt.lower())
+					self.addDtToBT(appC["appCompElement"],list(appC["bts"].values())[index],pojoConfig["dtName"])
 			if btReturn == None:
 				if not bt in self.getBtsNotFound():
 					self.setBtNotFound(bt)

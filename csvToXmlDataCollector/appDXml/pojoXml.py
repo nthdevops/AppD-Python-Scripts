@@ -110,12 +110,15 @@ class pojoXml(xmlElements):
 			if bssTrcs != None:
 				bssTrc = self.getElementsByTag(bssTrcs,"business-transaction")
 				for bt in bssTrc:
-					name = self.getElementByTag(bt,"name")
-					if name != None:
+					nameEl = self.getElementByTag(bt,"name")
+					if nameEl != None:
+						btName = nameEl.text
 						if not appCName.text in returnComps:
 							returnComps.update({appCName.text:{"appCompElement":appC,"bts":{}}})
+						if btName == "_APPDYNAMICS_DEFAULT_TX_":
+							btName = "All Other Traffic - "+self.getElementByTag(bt,"application-component").text
 						bts = returnComps[appCName.text]["bts"]
-						bts.update({name.text:bt})
+						bts.update({btName:bt})
 		return returnComps
 
 	def getCleanAppComp(self,appC):

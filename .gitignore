@@ -3,5 +3,5 @@
 /csvToXmlDataCollector/templates/
 /csvToXmlDataCollector/tests.py
 /csvToXmlDataCollector/build/
-/csvToXmlDataCollector/dist/
+/csvToXmlDataCollector/dist/*/
 *.spec

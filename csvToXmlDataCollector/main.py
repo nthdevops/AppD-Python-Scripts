@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os,sys
 root = os.getcwd()
 os.chdir(root+"/../")

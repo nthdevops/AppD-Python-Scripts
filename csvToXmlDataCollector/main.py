@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os,sys
-root = os.getcwd()
-os.chdir(root+"/../")
 sys.path.append(os.getcwd())
-os.chdir(root)
 from appDXml.pojoXml import pojoXml
 from appDXml.pojoElement import pojoElement
 from appDCsv.csvToPojo import csvToPojo, csvReader

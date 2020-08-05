@@ -1,8 +1,10 @@
+import copy
+import sys,os
+
+sys.path.append(os.getcwd()+"/../")
 from appDXml.xmlGenerator import xmlElements
 from appDXml.pojoElement import pojoElement
 from multipledispatch import dispatch
-import copy
-import sys
 
 class pojoXml(xmlElements):
 	def __init__(self,filesRoot,fileToBeCreated,appName,getBts):
@@ -51,7 +53,7 @@ class pojoXml(xmlElements):
 	def setAppDTsMinifiedDStdTree(self):
 		self.setRoot("application")
 		root = self.getRoot()
-		dtGtConf = self.setSubElement(root,"data-gatherer-configs")
+		self.setSubElement(root,"data-gatherer-configs")
 		self.setDtGathererConfigElement()
 
 	@dispatch(str,str,str,str,str,str)

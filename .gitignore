@@ -4,4 +4,5 @@
 /csvToXmlDataCollector/tests.py
 /csvToXmlDataCollector/build/
 /csvToXmlDataCollector/dist/*/
+/csvToXmlDataCollector/.vscode
 *.spec

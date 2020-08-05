@@ -1,6 +1,8 @@
+import re,sys,os
+
+sys.path.append(os.getcwd()+"/../")
 from appDCsv.csvReader import csvReader
 from appDXml.pojoElement import pojoElement
-import re
 
 class csvToPojo(csvReader):
 	def __init__(self,filesRoot,csvFileName):

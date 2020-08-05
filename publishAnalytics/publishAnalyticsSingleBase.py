@@ -32,7 +32,7 @@ def queriesArquivo(arquivo):
 	#Abre o arquivo com as queries para os processos
 	fp = open(os.getcwd()+arquivo)
 	queries = fp.readlines()
-	fp.close();
+	fp.close()
 	queriesTratadas = tratarArray(queries)
 	return queriesTratadas
 
@@ -55,7 +55,7 @@ headersProdJson = {
 
 #Payloads
 queryValoresJaRegistrados = 'SELECT sum(total) FROM consolidBases WHERE dadosConsolidados = "seteProcessosChave"'
-arq = '/seteProcesosChaveQs.txt';
+arq = '/seteProcesosChaveQs.txt'
 
 #Requests
 while True:

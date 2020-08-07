@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os,sys
-sys.path.append(os.getcwd())
+from importer import importerFixer
+
+importerFixer.setImportPathRoot(".")
 from appDXml.pojoXml import pojoXml
 from appDXml.pojoElement import pojoElement
 from appDCsv.csvToPojo import csvToPojo, csvReader
@@ -13,6 +15,10 @@ if not os.path.isdir("./runtimeFiles"):
 	os.mkdir("./runtimeFiles")
 if not os.path.isdir("./templates"):
 	print("Pasta templates não encontrada, reveja o arquivo README para execução correta do script")
+	sys.exit()
+
+if len(sys.argv) < 6:
+	print("Argumentos de entrada incompletos!")
 	sys.exit()
 
 rootPath = os.getcwd()

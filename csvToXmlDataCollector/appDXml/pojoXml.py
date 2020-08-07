@@ -1,7 +1,8 @@
 import copy
 import sys,os
+from importer import importerFixer
 
-sys.path.append(os.getcwd()+"/../")
+importerFixer.setImportPathRoot("/../")
 from appDXml.xmlGenerator import xmlElements
 from appDXml.pojoElement import pojoElement
 from multipledispatch import dispatch

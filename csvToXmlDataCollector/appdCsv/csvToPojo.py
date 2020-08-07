@@ -1,6 +1,7 @@
 import re,sys,os
+from importer import importerFixer
 
-sys.path.append(os.getcwd()+"/../")
+importerFixer.setImportPathRoot("/../")
 from appDCsv.csvReader import csvReader
 from appDXml.pojoElement import pojoElement
 

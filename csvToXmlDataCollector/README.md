@@ -94,6 +94,11 @@
 ### Para executar o script, abra um prompt de comando, vá até o diretório que o main.py file está e execute:
    **python main.py "nomeDoCsv.csv" "PREFIXO_NOME_DTS" VALIDARCSV(true/false) CRIARDATACOLLECTORSIMPORT(true/false) CRIARBUSINESSTRANSACTIONSIMPORT(true/false)** (Não é necessário adicionar /templates/nomeDoCsv.csv, apenas o nome do arquivo)
 
+### Instalar as seguintes Libs com o pip:
+1. multipledispatch
+2. lxml
+3. importRootFix
+
 **Exemplos:**
 
 	python main.py "nomeDoCsv.csv" PROJ1 true true true = O paramêtro PROJ1 define o prefixo para nomeação dos Data Collectors, o primeiro paramêtro "true" é para validar o CSV, o segundo para criar os xmls dos data collectors e o terceiro para criar os xmls das business transactions

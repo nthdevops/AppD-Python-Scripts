@@ -18,14 +18,16 @@ class csvToPojo(csvReader):
 			split = csvRows[c][4].split(",")
 			newGat = ""
 			for i in range(0,len(split)):
-				if split[i].strip() == "":
+				split[i] = split[i].strip()
+				if split[i] == "":
 					split[i] = "toString"
 				newGat += ","+split[i]
 			newGat = newGat.replace(",","",1)
 			csvRows[c][4] = newGat
 			if c > 0:
-				#Até 3, pois index 4 são os gatheres, que não devem ser alterados
-				for count in range(0,3):
+				#Itera até 3, pois index 4 são os gatheres, que não devem ser alterados
+				for count in range(0,4):
+					csvRows[c][count] = csvRows[c][count].strip()
 					if csvRows[c][count] == "":
 						csvRows[c][count] = csvRows[c-1][count]
 			if csvRows[c][0] in returnRows:
@@ -69,6 +71,11 @@ class csvToPojo(csvReader):
 								gt = gt.replace(".","",1)
 							if curArray[4].find(gt) == -1:
 								curArray[4] += ","+gt
+				gatherers = curArray[4].split(",")
+				for gatC in range(0,len(gatherers)):
+					if gatherers[gatC] == '':
+						gatherers[gatC].pop()
+				curArray[4] = gatherers
 				newCurApp.append(curArray)
 			appRows[appKey] = newCurApp
 		return appRows
@@ -121,7 +128,7 @@ class csvToPojo(csvReader):
 				dtName = self.getCleanName(prefix+""+dtClass.split(".")[-1]+"."+dtMethod)
 				curApp.update({dtName:{}})
 				curDt = curApp[dtName]
-				dtGatherersArray = dtRow[4].split(",")
+				dtGatherersArray = dtRow[4]
 				dtGatheres = {}
 				for c in range(0,len(dtGatherersArray)):
 					dtGatherersArray[c] = dtGatherersArray[c].strip()

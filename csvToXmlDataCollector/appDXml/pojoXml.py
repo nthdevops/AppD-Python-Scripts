@@ -187,8 +187,6 @@ class pojoXml(xmlElements):
 						appCompNameCur = self.getElementByTag(appC,"name").text
 						if appCompNameCur == appCompName:
 							btRet = bt
-							print("Comp "+appCompNameCur+" | "+appCompName)
-							print("All Other Traffic - "+appCompName+"\n")
 							break
 					else:
 						if name.lower() == btName.lower():

@@ -127,6 +127,9 @@ class csvToPojo(csvReader):
 				dtClass = dtRow[2]
 				dtMethod = dtRow[3]
 				dtName = self.getCleanName(prefix+""+dtClass.split(".")[-1]+"."+dtMethod)
+				countDtName = self.getNameCountForApp(dtName,curApp,0)
+				if(countDtName > 0):
+					dtName = dtName+str(countDtName)
 				curApp.update({dtName:{}})
 				curDt = curApp[dtName]
 				dtGatherersArray = dtRow[4]
@@ -172,6 +175,19 @@ class csvToPojo(csvReader):
 					dtGatheres.update({gathererName:{"position":position,"gathererType":gathererType,"transformerType":transformerType,"transformerValue":transformerValue}})
 				curDt.update({'class':dtClass,'method':dtMethod,"bts":dtBts,"gatherers":dtGatheres})
 		return formatedAppRows
+	
+	def getNameCountForApp(self,dtName,app,count):
+		occurCount = 0
+		cmpDtName = dtName
+		if(count > 0):
+			cmpDtName = dtName+str(count)
+		for subDtName in app:
+			if cmpDtName == subDtName:
+				occurCount += 1
+		totalCount = count+occurCount
+		if occurCount > 0:
+			totalCount = self.getNameCountForApp(dtName,app,totalCount)
+		return totalCount
 
 	def appPojoRowsToAppPojoElements(self,checkCsv,prefix):
 		appPojoRows = self.pojoRowsFormat(checkCsv,prefix)

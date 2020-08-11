@@ -146,10 +146,13 @@ class pojoXml(xmlElements):
 						if not appCName.text in returnComps:
 							returnComps.update({appCName.text:{"appCompElement":appC,"bts":{}}})
 						if btName == "_APPDYNAMICS_DEFAULT_TX_":
-							btName = "All Other Traffic - "+self.getElementByTag(bt,"application-component").text
+							btName = self.getAOTBtName(bt)
 						bts = returnComps[appCName.text]["bts"]
 						bts.update({btName:bt})
 		return returnComps
+	
+	def getAOTBtName(self,bt):
+		return "All Other Traffic - "+self.getElementByTag(bt,"application-component").text
 
 	def getCleanAppComp(self,appC):
 		if appC == None:
@@ -184,14 +187,10 @@ class pojoXml(xmlElements):
 				for bt in bssTrc:
 					name = self.getElementByTag(bt,"name").text
 					if name == "_APPDYNAMICS_DEFAULT_TX_":
-						appCompNameCur = self.getElementByTag(appC,"name").text
-						if appCompNameCur == appCompName:
-							btRet = bt
-							break
-					else:
-						if name.lower() == btName.lower():
-							btRet = bt
-							break
+						name = self.getAOTBtName(bt)
+					if name.lower() == btName.lower():
+						btRet = bt
+						break
 		return btRet
 
 	def addDtToBT(self,appComponent,btElement,dtName):

@@ -34,7 +34,7 @@ for appKey in appPojoElements:
 	pojos = appPojoElements[appKey]
 	dtsNum = 1
 	btsNum = 1
-	maxLines = 10000
+	maxLines = 45000
 	if getDTS:
 		print("Processando data collectors para a application "+appKey+"\n")
 		print()

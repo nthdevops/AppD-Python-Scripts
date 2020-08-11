@@ -171,6 +171,10 @@ class csvToPojo(csvReader):
 								gathererName += dtMethod+self.gathAutoNaming(gathererLast)
 							transformerType = "getterChain"
 							transformerValue = dtGatherersArray[c].replace(".", "|")
+					if transformerValue != None:
+						findDoublePipe = re.findall("\|\|",transformerValue)
+						if len(findDoublePipe) > 0:
+							transformerValue = transformerValue.replace("||","|")
 					gathererName = self.getCleanName(gathererName)
 					dtGatheres.update({gathererName:{"position":position,"gathererType":gathererType,"transformerType":transformerType,"transformerValue":transformerValue}})
 				curDt.update({'class':dtClass,'method':dtMethod,"bts":dtBts,"gatherers":dtGatheres})

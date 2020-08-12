@@ -1,5 +1,5 @@
 import copy
-import sys,os
+import sys,os,re
 from importer import importerFixer
 
 importerFixer.setImportPathRoot("/../")
@@ -176,8 +176,11 @@ class pojoXml(xmlElements):
 					break
 		return appComp
 
-	def getBTFromTree(self,btName,appCompName):
+	def getBTFromTree(self,btElement,appCompName):
 		rootAppComps = self.getCurrentElement()
+		btName = self.getElementByTag(btElement,"name").text
+		if btName == "_APPDYNAMICS_DEFAULT_TX_":
+			btName = self.getAOTBtName(btElement)
 		appComps = self.getElementsByTag(rootAppComps,"application-component")
 		btRet = None
 		for appC in appComps:
@@ -196,12 +199,11 @@ class pojoXml(xmlElements):
 	def addDtToBT(self,appComponent,btElement,dtName):
 		rootAppComps = self.getCurrentElement()
 		appCompName = self.getElementByTag(appComponent,"name").text
-		btName = self.getElementByTag(btElement,"name").text
 		appComp = self.getAppComponent(appCompName)
 		if appComp == None:
 			appComp = self.getCleanAppComp(appComponent)
 			self.setSubElement(rootAppComps,appComp)
-		bt = self.getBTFromTree(btName,appCompName)
+		bt = self.getBTFromTree(btElement,appCompName)
 		if bt == None:
 			bt = copy.deepcopy(btElement)
 			bts = self.getElementByTag(appComp,"business-transactions")

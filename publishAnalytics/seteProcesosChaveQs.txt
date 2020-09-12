@@ -1,6 +1,0 @@
-SELECT count(*) AS 'acompanhamentoSinistro' FROM transactions WHERE application = "Espaco Corretor" AND transactionName = "/integration/telasSite/abrir_aplicacao.cfm?iapp=258&acompanhamentoSinistro" AND transactionName IS NOT NULL
-SELECT count(*) AS 'apolices' FROM transactions WHERE application = "Espaco Corretor" AND transactionName = "/integration/telasSite/abrir_aplicacao.cfm?iapp=249&selecionarAppApolice.cfm" AND transactionName IS NOT NULL
-SELECT count(*) AS 'avisoSinistro' FROM transactions WHERE application = "Espaco Corretor" AND transactionName = "/integration/telasSite/abrir_aplicacao.cfm?iapp=21&listar_apolice_corretor.cfm" AND transactionName IS NOT NULL
-SELECT count(*) AS 'consultaParcelas' FROM transactions WHERE application = "Espaco Corretor" AND transactionName = "/integration/telasSite/abrir_aplicacao.cfm?iapp=247&selecionarAppParcelas.cfm" AND transactionName IS NOT NULL
-SELECT count(*) AS 'endosso' FROM transactions WHERE application = "Espaco Corretor" AND transactionName = "/integration/telasSite/abrir_aplicacao.cfm?iapp=274&selecionarAppEndosso.cfm" AND transactionName IS NOT NULL
-SELECT count(*) AS 'renovacao' FROM browser_records WHERE appkey = "EUM-AAB-AUE"

@@ -36,26 +36,26 @@ def queriesArquivo(arquivo):
 	queriesTratadas = tratarArray(queries)
 	return queriesTratadas
 
-#URLs
+#URLs ONPREM
 urlProdQuery = ("http://localhost:9080/events/query")
-urlProdPublish = ("http://localhost:9080/events/publish/consolidBases")
+urlProdPublish = ("http://localhost:9080/events/publish/INSERIR_NOME_DA_BASE")
 
 #Headers
 headersProdTxt = {
-        "X-Events-API-AccountName":"customer1_59ea4341-3509-4b97-b1f8-542db8ca2e6a",
-        "X-Events-API-Key":"407bddd1-77a7-4861-988e-0e2617463a7b",
+        "X-Events-API-AccountName":"INSERIR",
+        "X-Events-API-Key":"INSERIR",
         "Content-type":"application/vnd.appd.events+text;v=2"
 }
 
 headersProdJson = {
-        "X-Events-API-AccountName":"customer1_59ea4341-3509-4b97-b1f8-542db8ca2e6a",
-        "X-Events-API-Key":"407bddd1-77a7-4861-988e-0e2617463a7b",
+        "X-Events-API-AccountName":"INSERIR",
+        "X-Events-API-Key":"INSERIR",
         "Content-type":"application/vnd.appd.events+json;v=2"
 }
 
 #Payloads
-queryValoresJaRegistrados = 'SELECT sum(total) FROM consolidBases WHERE dadosConsolidados = "seteProcessosChave"'
-arq = '/seteProcesosChaveQs.txt'
+queryValoresJaRegistrados = 'SELECT sum(total) FROM INSERIR_NOME_DA_BASE WHERE INSERIR FILTROS DE CONTROLE
+arq = '/ARQUIVO COM QUERIES PARA AS CONSULTAS DE CONSOLIDAÇÃO.txt'
 
 #Requests
 while True:
@@ -64,7 +64,7 @@ while True:
 	valoresTotaisConsultados = agregarValoresQueries(urlProdQuery, headersProdTxt, queriesTratadas)
 	totaisAtuais = valorUnicoQuery(urlProdQuery, headersProdTxt, queryValoresJaRegistrados)
 	valorInsert = valoresTotaisConsultados - totaisAtuais
-	pbStr = [{ 'dadosConsolidados': 'seteProcessosChave', 'total': valorInsert}]
+	pbStr = [{ 'FILTRO': 'CAMPO DE CONTROLE', 'total': valorInsert}]
 	publishString = json.dumps(pbStr)
 
 	if valorInsert > 0:

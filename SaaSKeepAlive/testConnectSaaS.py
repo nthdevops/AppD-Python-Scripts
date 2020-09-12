@@ -5,10 +5,10 @@ from importer import importerFixer
 importerFixer.setImportPathRoot("../")
 from csvToXmlDataCollector.appDXml.xmlGenerator import xmlElements
 
-urls = {'applications':'https://raiadrogasilsa.saas.appdynamics.com/controller/rest/applications', 'genericAppAvail':'https://raiadrogasilsa.saas.appdynamics.com/controller/rest/applications/GENERICAPP/metric-data?metric-path=Application%20Infrastructure%20Performance%7C*%7CIndividual%20Nodes%7C*%7CAgent%7CApp%7CAvailability&time-range-type=BEFORE_NOW&duration-in-mins=15'}
+urls = {'applications':'https://URL_CONTROLLER/controller/rest/applications', 'genericAppAvail':'https://URL_CONTROLLER/controller/rest/applications/GENERICAPP/metric-data?metric-path=Application%20Infrastructure%20Performance%7C*%7CIndividual%20Nodes%7C*%7CAgent%7CApp%7CAvailability&time-range-type=BEFORE_NOW&duration-in-mins=15'}
 
 def getFromController(url):
-    return requests.get(url, auth=('serviceUser@raiadrogasilsa', 'serviceUser123'))
+    return requests.get(url, auth=('USUARIO@ACCOUNT', 'SENHA'))
 
 def getAppInfo(appName):
     url = urls['genericAppAvail'].replace('GENERICAPP',appName)

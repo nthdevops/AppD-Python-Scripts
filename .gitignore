@@ -1,8 +1,8 @@
-/csvToXmlDataCollector/runtimeFiles
+/**/runtimeFiles
 /**/__pycache__/
-/csvToXmlDataCollector/templates/
-/csvToXmlDataCollector/tests.py
-/csvToXmlDataCollector/build/
-/csvToXmlDataCollector/dist/*/
+/**/templates/
+/**/tests.py
+/**/build/
+/**/dist/*/
 /csvToXmlDataCollector/.vscode
 *.spec

@@ -23,8 +23,18 @@ class xmlElements(object):
 	def getFullPathFile(self):
 		return self.__fullPathFile
 
+	@dispatch(str)
 	def setRoot(self, rootName):
 		self.__root = ET.Element(rootName)
+		self.__workingElements.clear()
+	
+	@dispatch(ET.Element)
+	def setRoot(self,element):
+		self.__root = element
+		self.__workingElements.clear()
+	
+	def setRootFromStr(self,xmlStr):
+		self.__root = self.getRootTreeFromStr(xmlStr)
 		self.__workingElements.clear()
 
 	def getRoot(self):

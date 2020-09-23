@@ -4,10 +4,9 @@ importerFixer.setImportPathRoot("../")
 
 #Imports
 import requests, os, configparser
-from csvToXmlDataCollector.appDXml.xmlGenerator import xmlElements
 
 class controller():
-	def __init__(self,pathToConfigFile):
+    def __init__(self,pathToConfigFile):
         self.config = configparser.ConfigParser()
         self.__ctlHost = ''
         self.__ctlHttpProtocol = 'http'
@@ -15,6 +14,8 @@ class controller():
         self.__ctlUserName = ''
         self.__ctlUserPss = ''
         self.__apiUrls = {}
+        self.setConfig(pathToConfigFile)
+        self.setControllerConfig()
 
     def setConfig(self,pathToConfigFile):
         if os.path.exists(pathToConfigFile):
@@ -30,7 +31,20 @@ class controller():
         self.__ctlHost = defaultConfig['controller.host']
         if defaultConfig.getboolean('controller.ssl.enabled'):
             self.__ctlHttpProtocol = 'https'
-        #self.__ctlHost = defaultConfig['controller.host']
-        #self.__ctlHost = defaultConfig['controller.host']
-        #self.__ctlHost = defaultConfig['controller.host']
-        #{'applications':'HTTP://URL_CONTROLLER/controller/rest/applications', 'genericAppAvail':'https://URL_CONTROLLER/controller/rest/applications/GENERICAPP/metric-data?metric-path=Application%20Infrastructure%20Performance%7C*%7CIndividual%20Nodes%7C*%7CAgent%7CApp%7CAvailability&time-range-type=BEFORE_NOW&duration-in-mins=15'}
+        self.__ctlAccount = defaultConfig['controller.account.name']
+        self.__ctlUserName = defaultConfig['controller.user.name']
+        self.__ctlUserPss = defaultConfig['controller.user.password']
+        trBeforeNow = 'BEFORE_NOW&duration-in-mins=15'
+        trBetween = 'BETWEEN_TIMES&start-time=1600875000569&end-time=1600874700569'
+        self.__apiUrls['applications'] = self.__ctlHttpProtocol+'://'+self.__ctlHost+'/controller/rest/applications'
+        self.__apiUrls['genericAppAvail'] = self.__apiUrls['applications']+'/GENERICAPP/metric-data?metric-path=Application%20Infrastructure%20Performance%7C*%7CIndividual%20Nodes%7C*%7CAgent%7CApp%7CAvailability&time-range-type='+trBetween
+    
+    def getUrl(self,key):
+        return self.__apiUrls[key]
+
+    def requestController(self,url):
+        return requests.get(url, auth=(self.__ctlUserName+'@'+self.__ctlAccount, self.__ctlUserPss))
+
+    def getAppResponse(self,appName):
+        url = self.__apiUrls['genericAppAvail'].replace('GENERICAPP',appName)
+        return self.requestController(url)

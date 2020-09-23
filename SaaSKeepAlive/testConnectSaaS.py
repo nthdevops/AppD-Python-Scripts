@@ -1,11 +1,12 @@
-import requests, os
-import xml.etree.cElementTree as ET
+import requests, os, configparser
 
 from importer import importerFixer
 importerFixer.setImportPathRoot("../")
 from csvToXmlDataCollector.appDXml.xmlGenerator import xmlElements
 
-urls = {'applications':'https://URL_CONTROLLER/controller/rest/applications', 'genericAppAvail':'https://URL_CONTROLLER/controller/rest/applications/GENERICAPP/metric-data?metric-path=Application%20Infrastructure%20Performance%7C*%7CIndividual%20Nodes%7C*%7CAgent%7CApp%7CAvailability&time-range-type=BEFORE_NOW&duration-in-mins=15'}
+config = configparser.ConfigParser()
+
+config.read('example.ini')
 
 def getFromController(url):
     return requests.get(url, auth=('USUARIO@ACCOUNT', 'SENHA'))

@@ -6,3 +6,4 @@
 /**/dist/*/
 /csvToXmlDataCollector/.vscode
 *.spec
+*.ini

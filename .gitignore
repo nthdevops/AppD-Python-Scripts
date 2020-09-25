@@ -7,3 +7,4 @@
 /csvToXmlDataCollector/.vscode
 *.spec
 *test*
+*.log

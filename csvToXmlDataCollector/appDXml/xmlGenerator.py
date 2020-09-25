@@ -6,13 +6,20 @@ from lxml import etree
 from multipledispatch import dispatch
 
 class xmlElements(object):
+	@dispatch(str,str)
 	def __init__(self,filesRoot,fileName):
+		if not os.path.isdir("./runtimeFiles"):
+			os.mkdir("./runtimeFiles")
 		self.__filesFolder = filesRoot+"/runtimeFiles"
 		self.__file = fileName+".xml"
 		self.__fullPathFile = self.__filesFolder+"/"+self.getFile()
 		self.__root = ET.Element("empty")
 		self.__workingElements = {}
 		self.__currentElement = None
+	
+	@dispatch(str)
+	def __init__(self,fileName):
+		self.__init__(os.getcwd(),fileName)
 
 	def getFilesFolder(self):
 		return self.__filesFolder

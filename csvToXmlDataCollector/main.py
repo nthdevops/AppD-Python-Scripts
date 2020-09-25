@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
+#Relative fix
+from importfix import importfix
+importfix.setImportPathRoot(".")
 
-import os,sys
-from importer import importerFixer
-
-importerFixer.setImportPathRoot(".")
+#Local
 from appDXml.pojoXml import pojoXml
 from appDXml.pojoElement import pojoElement
 from appDCsv.csvToPojo import csvToPojo, csvReader
+
+#Packages
+import os,sys
 
 def strBool(v):
   return v.lower() in ("yes", "true", "t", "1")

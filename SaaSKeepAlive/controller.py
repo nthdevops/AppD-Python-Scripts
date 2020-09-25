@@ -1,8 +1,8 @@
-#Ref for local imports
-from importer import importerFixer
-importerFixer.setImportPathRoot("../")
+#Relative import path fix
+from importfix import importfix
+importfix.setImportPathRoot("../")
 
-#Imports
+#Package imports
 import requests, os, configparser
 
 class controller():
@@ -34,10 +34,8 @@ class controller():
         self.__ctlAccount = defaultConfig['controller.account.name']
         self.__ctlUserName = defaultConfig['controller.user.name']
         self.__ctlUserPss = defaultConfig['controller.user.password']
-        trBeforeNow = 'BEFORE_NOW&duration-in-mins=15'
-        trBetween = 'BETWEEN_TIMES&start-time=1600875000569&end-time=1600874700569'
         self.__apiUrls['applications'] = self.__ctlHttpProtocol+'://'+self.__ctlHost+'/controller/rest/applications'
-        self.__apiUrls['genericAppAvail'] = self.__apiUrls['applications']+'/GENERICAPP/metric-data?metric-path=Application%20Infrastructure%20Performance%7C*%7CIndividual%20Nodes%7C*%7CAgent%7CApp%7CAvailability&time-range-type='+trBetween
+        self.__apiUrls['genericAppAvail'] = self.__apiUrls['applications']+'/GENERICAPP/metric-data?metric-path=Application%20Infrastructure%20Performance%7C*%7CIndividual%20Nodes%7C*%7CAgent%7CApp%7CAvailability&time-range-type=BEFORE_NOW&duration-in-mins=15'
     
     def getUrl(self,key):
         return self.__apiUrls[key]

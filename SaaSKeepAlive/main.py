@@ -1,33 +1,42 @@
-from importer import importerFixer
-importerFixer.setImportPathRoot("../")
+#Relative import path fix
+from importfix import importfix
+importfix.setImportPathRoot("../")
+
+#Local imports
 from csvToXmlDataCollector.appDXml.xmlGenerator import xmlElements
-
-import requests, os
 from SaaSKeepAlive.controller import controller
+from SaaSKeepAlive.customLogs import logger
 
-ctl = controller('./appd_config.ini')
+#Package imports
+import os
 
-xmlApps = xmlElements(os.getcwd(),'applications')
+iniPath = './appd_config.ini'
+ctl = controller(iniPath)
+logs = logger(iniPath,'main',True)
 
-resp = ctl.requestController(ctl.getUrl('applications'))
+xmlApps = xmlElements('applications')
 
-xmlApps.setRootFromStr(resp.text)
-appNames = ['Agenda'] #[name.text for name in xmlApps.getElementsByTag('name')] #['dev-namespace']
-appsXmls = []
+applicationsXml = ctl.requestController(ctl.getUrl('applications')).text
+
+xmlApps.setRootFromStr(applicationsXml)
+appNames = [name.text for name in xmlApps.getElementsByTag('name')]
+totalNodes = 0
+totalAvailCount = 0
 for app in appNames:
+    logs.write('Processing App: '+app,'INFO')
     appXml = ctl.getAppResponse(app).text
-    appsXmls.append(appXml)
-    xmlApps = xmlElements(os.getcwd(),app)
+    xmlApps = xmlElements(app)
     xmlApps.setRootFromStr(appXml)
-    print('\nFor APP: '+app)
     metricValues = xmlApps.getElementsByTag('metricValues')
-    metricNames = []
     for el in metricValues:
+        totalNodes += 1
         metric = xmlApps.getElementByTag(el,'metric-value')
         if metric != None:
-            value = xmlApps.getElementByTag(metric,'value')
-            print(value.tag+': '+value.text)
+            totalAvailCount += int(xmlApps.getElementByTag(metric,'count').text)
         else:
-            print('EMPTY: '+el.tag+': '+str(len(list(el))))
-    #print(str(list(metricNames))+'\n')
-    xmlApps.writeTree()
+            logs.write('15 min unavailable node for app '+app,'DEBUG')
+
+totalAvailExpected = totalNodes * 15
+percentAvail = (totalAvailCount * 100) / totalAvailExpected
+logs.write('TotalNodes: '+str(totalNodes)+' | Availability Expected: '+str(totalAvailExpected)+' | Availability: '+str(totalAvailCount)+' | Percent: '+str(percentAvail)+'%','INFO')
+logs.write('Finished processing!','INFO')

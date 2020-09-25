@@ -1,4 +1,5 @@
 #Relative import path fix
+from SaaSKeepAlive.customLogs import logger
 from importfix import importfix
 importfix.setImportPathRoot("../")
 
@@ -6,8 +7,9 @@ importfix.setImportPathRoot("../")
 import requests, os, configparser
 
 class controller():
-    def __init__(self,pathToConfigFile):
+    def __init__(self,pathToConfigFile,loggerObj):
         self.config = configparser.ConfigParser()
+        self.logs = loggerObj
         self.__ctlHost = ''
         self.__ctlHttpProtocol = 'http'
         self.__ctlAccount = ''
@@ -41,7 +43,12 @@ class controller():
         return self.__apiUrls[key]
 
     def requestController(self,url):
-        return requests.get(url, auth=(self.__ctlUserName+'@'+self.__ctlAccount, self.__ctlUserPss))
+        try:
+            res = requests.get(url, auth=(self.__ctlUserName+'@'+self.__ctlAccount, self.__ctlUserPss))
+            return res
+        except Exception as e:
+            self.logs.write('Unable to get controller info.\n'+str(e),'DEBUG')
+            return None
 
     def getAppResponse(self,appName):
         url = self.__apiUrls['genericAppAvail'].replace('GENERICAPP',appName)

@@ -9,9 +9,11 @@ class logger():
     def __init__(self,pathToConfigFile,logname,withPrintIn):
         self.config = configparser.ConfigParser()
         self.setConfig(pathToConfigFile)
+        self.logname = logname
         logConfig = self.config['LOGGING']
         self.__logLevel = logConfig['log.level'].upper()
-        self.__file = open(logname+".log", "w+")
+        self.__file = None
+        self.__logOpen()
         self.withPrint = withPrintIn
     
     def setConfig(self,pathToConfigFile):
@@ -27,12 +29,14 @@ class logger():
         return self.__logLevel
     
     def __writeFile(self,message):
+        self.__logOpen()
         self.__file.write(message+'\n')
+        self.__logClose()
     
     def sulfix(self):
         return str(time.asctime()+' | ['+self.getLogLevel()+']: ')
     
-    def write(self,logMessage,logLevel,):
+    def write(self,logMessage,logLevel):
         if logMessage == '':
             pass
         else:
@@ -45,3 +49,16 @@ class logger():
             else:
                 if self.getLogLevel() == 'DEBUG':
                     self.__writeFile(fullMessage)
+    
+    def clear(self):
+        self.__logOpen()
+        self.__file.truncate(0)
+        self.__logClose()
+    
+    def __logOpen(self):
+        if self.__file == None or self.__file.closed:
+            self.__file = open(self.logname+".log", "a+")
+    
+    def __logClose(self):
+        if not self.__file == None or not self.__file.closed:
+            self.__file.close()

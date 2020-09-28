@@ -1,6 +1,5 @@
 #Relative import path fix
 from importfix import importfix
-from multipledispatch.core import dispatch
 importfix.setImportPathRoot("../")
 
 import re
@@ -223,16 +222,13 @@ class csvToPojo(csvReader):
 				curAppPojo.append(pojoEl)
 		return appPojoElements
 
-	@dispatch(str,int)
-	def returnCheckedGathName(self, name, count):
+	def returnCheckedGathName(self, name):
 		checkedGathName = name
-		if name in self.__gathNames:
+		count = 1
+		while checkedGathName in self.__gathNames:
 			count += 1
-			checkedGathName = self.returnCheckedGathName(name+str(count),count)
+			checkedGathName = name+str(count)
+
 		if not (checkedGathName in self.__gathNames):
 			self.__gathNames.append(checkedGathName)
 		return checkedGathName
-
-	@dispatch(str)
-	def returnCheckedGathName(self, name):
-		return self.returnCheckedGathName(name, 0)

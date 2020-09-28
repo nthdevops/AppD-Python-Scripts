@@ -158,7 +158,7 @@ class xmlElements(object):
 		for child in root.iter(None):
 			if(elementText == child.text):
 				elements.append(child)
-		return element
+		return elements
 
 	def printElementsTags(self, elements):
 		for el in elements:

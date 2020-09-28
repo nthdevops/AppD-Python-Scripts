@@ -1,10 +1,11 @@
-import copy
-import sys,os,re
-from importer import importerFixer
+#Relative import path fix
+from importfix import importfix
+importfix.setImportPathRoot("../")
 
-importerFixer.setImportPathRoot("/../")
-from appDXml.xmlGenerator import xmlElements
-from appDXml.pojoElement import pojoElement
+import copy
+
+from csvToXmlDataCollector.appDXml.xmlGenerator import xmlElements
+from csvToXmlDataCollector.appDXml.pojoElement import pojoElement
 from multipledispatch import dispatch
 
 class pojoXml(xmlElements):

@@ -1,13 +1,16 @@
-import re,sys,os
-from importer import importerFixer
+#Relative import path fix
+from importfix import importfix
+from multipledispatch.core import dispatch
+importfix.setImportPathRoot("../")
 
-importerFixer.setImportPathRoot("/../")
-from appDCsv.csvReader import csvReader
-from appDXml.pojoElement import pojoElement
+import re
+from csvToXmlDataCollector.appDCsv.csvReader import csvReader
+from csvToXmlDataCollector.appDXml.pojoElement import pojoElement
 
 class csvToPojo(csvReader):
 	def __init__(self,filesRoot,csvFileName):
 		delimiterChar = ";"
+		self.__gathNames = []
 		super().__init__(filesRoot,csvFileName,delimiterChar)
 
 	def getAppRowsEmptyCellsAsMerges(self):
@@ -175,7 +178,7 @@ class csvToPojo(csvReader):
 						findDoublePipe = re.findall("\|\|",transformerValue)
 						if len(findDoublePipe) > 0:
 							transformerValue = transformerValue.replace("||","|")
-					gathererName = self.getCleanName(gathererName)
+					gathererName = self.returnCheckedGathName(self.getCleanName(gathererName))
 					dtGatheres.update({gathererName:{"position":position,"gathererType":gathererType,"transformerType":transformerType,"transformerValue":transformerValue}})
 				curDt.update({'class':dtClass,'method':dtMethod,"bts":dtBts,"gatherers":dtGatheres})
 		return formatedAppRows
@@ -219,3 +222,17 @@ class csvToPojo(csvReader):
 					pojoEl.addPojoMethodInvocationGatherer(name,position,gathererType,transformerType,transformerValue)
 				curAppPojo.append(pojoEl)
 		return appPojoElements
+
+	@dispatch(str,int)
+	def returnCheckedGathName(self, name, count):
+		checkedGathName = name
+		if name in self.__gathNames:
+			count += 1
+			checkedGathName = self.returnCheckedGathName(name+str(count),count)
+		if not (checkedGathName in self.__gathNames):
+			self.__gathNames.append(checkedGathName)
+		return checkedGathName
+
+	@dispatch(str)
+	def returnCheckedGathName(self, name):
+		return self.returnCheckedGathName(name, 0)

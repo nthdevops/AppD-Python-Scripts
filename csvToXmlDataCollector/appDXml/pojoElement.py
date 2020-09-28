@@ -1,5 +1,3 @@
-import os
-
 class pojoElement(object):
 	def __init__(self):
 		self.__pojoGathererConfig = {"attachNewBts":None,"enableAnalytics":None,"enableApm":None,"dtName":None,"className":None,"methodName":None,"businessTransactions":None}

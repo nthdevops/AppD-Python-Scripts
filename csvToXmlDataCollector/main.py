@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 #Relative fix
 from importfix import importfix
-importfix.setImportPathRoot(".")
+importfix.setImportPathRoot("../")
 
 #Local
-from appDXml.pojoXml import pojoXml
-from appDXml.pojoElement import pojoElement
-from appDCsv.csvToPojo import csvToPojo, csvReader
+from csvToXmlDataCollector.appDXml.pojoXml import pojoXml
+from csvToXmlDataCollector.appDXml.pojoElement import pojoElement
+from csvToXmlDataCollector.appDCsv.csvToPojo import csvToPojo, csvReader
 
 #Packages
 import os,sys

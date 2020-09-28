@@ -1,5 +1,4 @@
 import csv
-import os
 
 class csvReader(object):
 	def __init__(self,filesRoot,csvFileName,delimiterChar):

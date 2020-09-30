@@ -1,5 +1,4 @@
 #Relative import path fix
-from SaaSKeepAlive.customLogs import logger
 from importfix import importfix
 importfix.setImportPathRoot("../")
 

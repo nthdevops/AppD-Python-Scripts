@@ -7,14 +7,26 @@ from csvToXmlDataCollector.appDXml.xmlGenerator import xmlElements
 from SaaSKeepAlive.controller import controller
 from SaaSKeepAlive.customLogs import logger
 from telegramApi import telegramApi
-import time
+import time,sys
 
-iniPath = './appd_config.ini'
-logs = logger(iniPath,'main',True)
+def toBool(s):
+    return s.lower() in ['true', '1', 't', 'y', 'yes']
+
+def getChecked(argI,std):
+    if len(sys.argv) >= (argI + 1):
+        return sys.argv[argI]
+    else:
+        return std
+
+iniPath = getChecked(1, 'appd_config.ini')
+sleepSecs =  int(getChecked(2, 3)) * 60
+outTerminal = toBool(getChecked(3, 'False'))
+logName = 'main'
+logs = logger(iniPath,logName,outTerminal)
+print("Logging to "+logName+".log")
 ctl = controller(iniPath,logs)
 msgBot = telegramApi.telegramApi(iniPath)
 xmlApps = xmlElements('applications')
-sleepSecs = 300
 
 while True:
     appResponse = ctl.requestController(ctl.getUrl('applications'))

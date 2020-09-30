@@ -35,7 +35,7 @@ class logger():
     
     def sulfix(self):
         return str(time.asctime()+' | ['+self.getLogLevel()+']: ')
-    
+
     def write(self,logMessage,logLevel):
         if logMessage == '':
             pass

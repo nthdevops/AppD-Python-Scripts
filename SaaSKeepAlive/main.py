@@ -1,3 +1,5 @@
+#!-*- coding: utf-8 -*-
+
 #Relative import path fix
 from importfix import importfix
 importfix.setImportPathRoot("../")

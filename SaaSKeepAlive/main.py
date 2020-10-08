@@ -49,7 +49,7 @@ while True:
     try:
         appResponse = ctl.requestController(ctl.getUrl('applications'))
     except Exception as e:
-        msg = 'Controller não está acessível. Verifique se o AppDynamics está no ar!\nVerificar também a possibilidade de falhar no script keep alive.'
+        msg = 'Falha na comunicação com a Controller. Verifique se o AppDynamics está no ar!\nAcionar equipe de Telemetria.'
         logs.write(msg,'INFO')
         sendMessage(msg)
         appResponse = None
@@ -83,7 +83,6 @@ while True:
                 except Exception as e:
                     msg = 'Não foi possível processar a application '+app
                     logs.write(msg,'INFO')
-                    sendMessage(msg)
 
             logs.write('All apps processed, processing data','DEBUG')
             totalAvailExpected = totalNodes * 15
@@ -93,7 +92,7 @@ while True:
             if percentAvail > percentError:
                 msg = 'TotalNodes: '+str(totalNodes)+' | Availability Expected: '+str(totalAvailExpected)+' | Availability: '+str(totalAvailCount)+' | Percent: '+str(percentAvail)+'%'
             else:
-                msg = 'Apenas '+str(percentAvail)+'% de nodes disponíveis.\nPossível falha no controller!'
+                msg = 'Apenas '+str(percentAvail)+'% de nodes disponíveis. Verifique se o AppDynamics está no ar!\nAcionar equipe de Telemetria.'
                 sendMessage(msg)
             logs.write(msg,'INFO')
             logs.write('Finished processing!','INFO')

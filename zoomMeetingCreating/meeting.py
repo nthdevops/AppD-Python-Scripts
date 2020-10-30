@@ -1,5 +1,5 @@
 import http.client as httpc
-import datetime, sys, jwt, json
+import datetime, jwt, json
 from time import time
 from flask import Flask, request
 

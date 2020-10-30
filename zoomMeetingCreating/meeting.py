@@ -10,15 +10,13 @@ def generateToken():
 	token = jwt.encode({'iss':"JltcEu_yTUqRhiM6KaLbeQ", "exp": time() + 300}, "kz3cRy7fEdQdqFOzBhcTPxI2wyEa6wDK5fS0", algorithm='HS256').decode('utf-8')
 	return token
 
-#Headers
-conn = httpc.HTTPSConnection("api.zoom.us")
-headers = {'authorization': 'Bearer %s' % generateToken(), 'content-type': 'application/json'}
-
 def mkRequest(method,url,bodyIn,headersIn):
-	conn.request(method, url, body=bodyIn, headers=headersIn)
-	res = conn.getresponse()
-	data = res.read()
-	return data.decode('utf-8')
+  conn = httpc.HTTPSConnection("api.zoom.us")
+  conn.request(method, url, body=bodyIn, headers=headersIn)
+  res = conn.getresponse()
+  data = res.read()
+  conn.close()
+  return data.decode('utf-8')
 
 @app.route('/', methods=['POST'])
 def createMeeting():
@@ -33,6 +31,9 @@ def createMeeting():
   names = []
   for email in emails:
     names.append(email.split("@")[0])
+  
+  #Headers
+  headers = {'authorization': 'Bearer %s' % generateToken(), 'content-type': 'application/json'}
 
   #Meeting creating config
   meetingName = "Virtual Techbar Supporting "+emails[1]

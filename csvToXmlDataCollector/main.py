@@ -4,9 +4,9 @@ from importfix import importfix
 importfix.setImportPathRoot("../")
 
 #Local
-from csvToXmlDataCollector.appDXml.pojoXml import pojoXml
-from csvToXmlDataCollector.appDXml.pojoElement import pojoElement
-from csvToXmlDataCollector.appDCsv.csvToPojo import csvToPojo, csvReader
+from appDXml.pojoXml import pojoXml
+from appDXml.pojoElement import pojoElement
+from appDCsv.csvToPojo import csvToPojo, csvReader
 
 #Packages
 import os,sys

@@ -3,8 +3,8 @@ from importfix import importfix
 importfix.setImportPathRoot("../")
 
 import re
-from csvToXmlDataCollector.appDCsv.csvReader import csvReader
-from csvToXmlDataCollector.appDXml.pojoElement import pojoElement
+from appDCsv.csvReader import csvReader
+from appDXml.pojoElement import pojoElement
 
 class csvToPojo(csvReader):
 	def __init__(self,filesRoot,csvFileName):

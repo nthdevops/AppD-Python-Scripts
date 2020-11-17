@@ -1,7 +1,6 @@
 import xml.etree.cElementTree as ET
 import xml.dom.minidom
-import os
-import copy
+import os, copy, sys
 from lxml import etree
 from multipledispatch import dispatch
 
@@ -215,6 +214,9 @@ class xmlElements(object):
 			pass
 
 	def getRootFromFile(self,filePath):
+		if not os.path.isfile(filePath):
+			print("Arquivo "+filePath+" NAO EXISTE!")
+			sys.exit()
 		return self.getRootTreeFromStr(self.getCleanTreeStr(filePath))
 
 	def getCopyLess(self,element,*elementsTagRemove):
